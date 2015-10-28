@@ -8,7 +8,7 @@ class UserProfile(models.Model):
     dateofbirth = models.DateField()
     height = models.CharField(max_length=200)
     weight = models.CharField(max_length=200)
-    IDNum = models.CharField(max_length=200)
+
     Residence = models.CharField(max_length=200)
     PhoneNum = models.CharField(max_length=200)
     timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
