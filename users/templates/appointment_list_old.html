@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% block content %}
+
+
+{% load static %}
+
+
+ <div class="well">
+     <table class="table table-striped">
+      <tr>
+         <th>Date</th>
+         <th>Details</th>
+      </tr>
+      {% for appointment in object_list %}
+         <tr><td>{{ appointment.firstchoicedate }}</td><td>{{ appointment.purposeofvisit }}</td></tr>
+      {% endfor %}
+    </table>
+</div>
+
+
+{% endblock %}

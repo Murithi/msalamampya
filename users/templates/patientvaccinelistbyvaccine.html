@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+{% load static %}
+
+
+<div class="container margin-bottom-30">
+        <div>
+
+
+                <div>
+                    <div class="row">
+
+                            <div class="col-sm-4">
+                                <img class="img-thumbnail" src="{{ mainvaccine.image.url }}" >
+                            </div>
+
+
+                    </div>
+                    </div>
+                <hr>
+
+        </div>
+
+                <!-- Select User menu -->
+        <div class="col-md-12">
+          <ul class="nav nav-pills">
+              {% if thisuser.id = parent.user.id %}
+              <li class="active"><a href="{% url 'vaccinelist' %}?pk={{ parent.user.id }}&id={{ mainvaccine.id }}">{{ parent.user.first_name }}</a></li>
+
+              {% else %}
+
+                <li><a href="{% url 'vaccinelist' %}?pk={{ parent.user.id }}&id={{ mainvaccine.id }}">{{ parent.user.first_name }}</a></li>
+              {% endif %}
+              {% for item in  alldependants %}
+              {% if thisuser.id = item.user.id %}
+              <li class="active"><a href="{% url 'vaccinelist' %}?pk={{ item.user.id }}&id={{ mainvaccine.id }}">{{ item.user.first_name }}</a></li>
+              {% else %}
+                <li><a href="{% url 'vaccinelist' %}?pk={{ item.user.id }}&id={{ mainvaccine.id }}">{{ item.user.first_name }}</a></li>
+              {% endif %}
+              {% endfor %}
+
+            </ul>
+            </div>
+               <hr>
+
+            <div class="btn-group pull-right">
+              <button type="button" class="btn btn-danger">Action</button>
+              <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                <span class="caret"></span>
+                <span class="sr-only">Toggle Dropdown</span>
+              </button>
+              <ul class="dropdown-menu" role="menu">
+
+                <li><a href="#">Report Side Effects</a></li>
+                <li><a href="#">Schedule Appointment</a></li>
+              </ul>
+            </div>
+            <div class="headline">
+
+              <h2>{{ mainvaccine.vaccinename }}</h2>
+
+            </div>
+
+                <h4> Progress by Dosage </h4>
+
+                <div class="progress">
+
+                  <div class="progress-bar info" style="width: {{ percentagedose }}%;">{{ percentagedose }}%</div>
+                </div>
+
+                 <div class="list-group">
+
+                        <h4>Vaccine Doses </h4>
+
+                    {% for item in  vaccinesrecieved %}
+                     <a href="#" class="list-group-item">{{ item }}<i class="glyphicon glyphicon-ok pull-right"></i></a>
+
+                    {% endfor %}
+
+
+                    {% for vaccine in vaccinesrequired %}
+
+                     <a href="#
+                     " class="list-group-item">{{ vaccine }}<i class="glyphicon glyphicon-remove pull-right"></i></a>
+
+
+                    {% endfor %}
+
+
+                 </div>
+                <div role="tabpanel">
+
+                      <!-- Nav tabs -->
+                      <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#about" data-toggle="tab">About</a></li>
+                        <li role="presentation"><a href="#administration"  data-toggle="tab">Vaccine Administration</a></li>
+                        <li role="presentation"><a href="#sideeffects"  data-toggle="tab">Side Effects</a></li>
+                        <li role="presentation"><a href="#schedules" data-toggle="tab">Schedules</a></li>
+                      </ul>
+
+                      <!-- Tab panes -->
+                      <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane fade in active" id="about">
+                            {{ mainvaccine.about_Vaccine }}
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade" id="administration">
+                            <ul>
+
+                                {% for item in alldoses %}
+                                    <li>{{ item.vaccine_dose }} - {{ item.vaccine_dose_date_in_months }} </li>
+                                {% endfor %}
+
+                            </ul>
+
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade" id="sideeffects">
+                                <ul>
+
+                                   {% for sideff in sideeffects %}
+                                <li>{{ sideff.sideEffectDesc }} </li>
+                                {% endfor %}
+
+                                </ul>
+
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade" id="schedules">...</div>
+                      </div>
+
+                </div>
+
+
+
+</div>
+{% endblock %}

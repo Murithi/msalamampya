@@ -20,12 +20,21 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ntk8%7b9(8nokd#8g3@t+sk7$443tdkak0f@t_a=f4-jdc@xv6'
+SECRET_KEY = 'ntk8%7b9(8nokd#8g3@t+sk7M$443tdkak0f@t_a=f4-jdc@xv6'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+
+# Address of Redis instance, our Celery broker
+BROKER_URL = 'amqp://localhost'
+BROKER_POOL_LIMIT = 8
+
+
+# Reminder time: how early text messages are sent in advance of appointments
+REMINDER_TIME = 30 # minutes
 
 
 # Application definition
@@ -38,7 +47,13 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bootstrap3',
+    'django_forms_bootstrap',
+    'django_extensions',
+    'django_messages',
     'users',
+    'vaccines',
+    'blog',
+
 )
 
 MIDDLEWARE_CLASSES = (
@@ -79,8 +94,8 @@ WSGI_APPLICATION = 'msalamampya.wsgi.application'
 DATABASES = {
           'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-            'NAME': 'msalamampya',                      # Or path to database file if using sqlite3.
-            # The following settings are not used with sqlite3:
+            'NAME': 'msalamaeclipse',                      # Or path to database file if using sqlite3.
+            # The following settingns are not used with sqlite3:
             'USER': 'postgres',
             'PASSWORD': '',
             'HOST': 'localhost',                      # Empty for localhost through domain sockets or           '127.0.0.1' for localhost through TCP.
@@ -102,10 +117,14 @@ USE_L10N = True
 
 USE_TZ = True
 
-AUTH_PROFILE_MODULE='msalamaclient.UserProfile'
+AUTH_PROFILE_MODULE='msalamampya.UserProfile'
+
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+MEDIA_URL = '/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'images')
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')

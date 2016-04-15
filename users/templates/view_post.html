@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% load static %}
+<div id="su-wrap"> <!-- used to force footer to bottom of short pages -->
+  <div id="su-content"> <!-- used to force footer to bottom of short pages -->
+
+  <!--=== Top ===-->
+
+
+
+   <div id="content" class="container" role="main" tabindex="0">
+     <div class="row">
+       <!-- Main column -->
+       <div id="main-content" class="col-md-8" role="main">
+
+
+
+
+<!-- BEGIN STORY -->
+<div id="story">
+
+
+
+<span class="dateline">Msalama news, {{post.timestamp}}</span>
+<h1>{{post.title}}</h1>
+<div id="deck"><p>{{blog.intro}}.</p></div>
+
+<p class="byline">
+By <span class="byline">Greta Lorge</span>
+
+</p>
+
+<div class="photolarge">
+
+
+
+
+
+
+<div class="photolarge">
+<span class="citation">{{post.imagecaption}}</span>
+<a href="{{post.image.url}}" class="lightbox"><img src="{{ post.image.url }}" alt="Prof. Hank Greely" class="photolarge" /></a>
+<p>{{post.subtitle}}.</p>
+
+</div>
+
+
+
+
+
+</div>
+
+<p> {{post.body}}</p>
+
+<!--<h2 class="related-content">Media Contact</h2>-->
+<!--<p>Henry T. Greely, Stanford Law School: (650) 723-2517, <a href="mailto:hgreely@stanford.edu">hgreely@stanford.edu</a></p>-->
+<!--<p>Clifton B. Parker, Stanford News Service: (650) 725-0224, <a href="mailto:cbparker@stanford.edu">cbparker@stanford.edu</a></p>-->
+
+
+
+
+
+<p style="padding-top: 10px;" id="toolbar-bottom">
+	<span class='st_email_hcount' displayText='Email'></span>
+	<span class='st_facebook_hcount' displayText='Facebook'></span>
+	<span class='st_twitter_hcount' st_via='Stanford' displayText='Tweet'></span>
+	<span class='st_linkedin_hcount' displayText='LinkedIn'></span>
+	<span class='st_stumbleupon_hcount' displayText='Stumble'></span>
+	<span class='st_googleplus_hcount' ></span>
+</p>
+
+
+<!-- END STORY -->
+</div>
+</div>
+
+<!--<div id="sidebar-second" class="col-md-4">-->
+<!--<div id="socialmedia">-->
+	<!--<h2>Share This Story</h2>-->
+<!--<script type="text/javascript">&lt;!&ndash;-->
+<!--document.write('<span class="st_facebook_vcount" displayText="Facebook"></span><span class="st_twitter_vcount" st_via="Stanford" displayText="Tweet"></span><span class="st_linkedin_vcount" displayText="LinkedIn"></span><span class="st_email_vcount" displayText="Email"></span><hr class="clearer" /><span class="st_fblike_hcount" displayText="Like"></span>')-->
+<!--&ndash;&gt;</script>-->
+<!--<hr class="clearer" />-->
+<!--</div>-->
+
+
+
+
+<!--&lt;!&ndash; SIDEBAR EXTRA BEGIN&ndash;&gt;-->
+<!--<div class="nocontent">-->
+<!--<iframe src="http://news.stanford.edu/news/includes/sidebar-iframe.html" width="100%" height="500" scrolling="no" frameborder="0"></iframe>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; SIDEBAR EXTRA END &ndash;&gt;-->
+      <!--</div>-->
+    <!--</div>-->
+
+    </div><!-- #content-->
+  </div><!-- #su-content -->
+</div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "msalamamail.html" %}
+{% block content %}
+{% load static %}
+
+                <div class="tab-pane fade in active" id="home">
+
+                    <h3> Subject :{{ message.subject }} </h3>
+
+                    <dt>Sender</dt>
+                    <dd>{{ message.sender }}</dd>
+                    <dt>Date</dt>
+                    <dd>{{ message.sent_at|date:_("DATETIME_FORMAT")}}</dd>
+                    <h4>Recipient: {{ message.recipient }}</h4>
+
+                {{ message.body|linebreaksbr }}<br /><br />
+
+                {% ifequal message.recipient.pk user.pk %}
+                <a href="{% url 'messages_reply' message.id %}">Reply</a>
+                {% endifequal %}
+                <a href="{% url 'messages_delete' message.id %}">Delete</a>
+
+                {% comment %}Example reply_form integration
+                {% if reply_form %}
+                <h1>Compose reply</h1>
+                <form action="{% url 'messages_reply' message.id %}" method="post">
+                {% csrf_token %}
+                <table>
+                {{ reply_form.as_table }}
+                </table>
+                <input type="submit" value="Send &raquo;"/>
+                </form>
+                {% endif %}
+                {% endcomment %}
+                </div>
+
+{% endblock %}

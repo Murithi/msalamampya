@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% block content %}
+
+
+{% load static %} 
+
+
+ <div class="well">
+     <form role="form" method="post" action="{% url 'makeappointment' %}" class="form-horizontal" novalidate>
+    {% csrf_token %}
+
+
+            <h2>Choose Appointment details</h2>
+            
+            {% bootstrap_form form %}
+
+                <button name="submit" type="submit" value="Submit Appointment Request" class="btn btn-default">Create Appointment</button>
+
+
+        </form>
+  
+</div>
+
+
+{% endblock %}

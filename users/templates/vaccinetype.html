@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+{% load static %} 
+<div id="su-wrap">
+    <div class="container margin-bottom-30">
+        <!-- Top Stories -->
+            <div class="headline">
+              <h2>My Vaccines</h2>
+            </div>
+            <div class="row" id="news"> 
+              <!-- Top Stories include file --> 
+                    
+                        <div class="col-sm-6 news-item">
+                          <div class="news-img">
+                            <a href="{% url 'childvaccines' %}" class="su-link"
+                             data-ua-action="hp-news" title="Photo Credit: Francois Mori">
+                                
+                             <img src="{% static 'images/othervaccines.jpg' %}"
+                             class="img-responsive" alt="Marine and Jean Le Pen" /></a>
+                          </div>
+                          <div class="news-text">
+                            <h3><a href="{% url 'childvaccines' %}" 
+                            class="su-link" data-ua-action="hp-news"> Child Vaccines</a></h3>
+                            <p>View Child Vaccines.</p>
+                          </div>
+                        </div>
+                    
+                        
+                        <div class="col-sm-6 news-item">
+                          <div class="news-img">
+                            <a href="#" class="su-link"
+                             data-ua-action="hp-news" title="Photo Credit: Linda Cicero">
+                                 
+                             <img src="{% static 'images/othervaccines.jpg' %}" class="img-responsive" alt="Stanford students planting trees" /></a>
+                          </div>
+                          <div class="news-text">
+                            <h3><a href="#"
+                            class="su-link" data-ua-action="hp-news">Other Vaccines</a></h3>
+                            <p>View other vaccines.</p>
+                          </div>
+                        </div>
+                        
+                        
+                        
+    
+                    </div>
+            </div>
+
+    </div>
+
+{% endblock %}

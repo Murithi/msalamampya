@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+{% load static %}
+
+
+  <div class="panel panel-info">
+    <div class="panel-heading text-center"><h2>View {{ patientdetails.user.first_name}}'s details</h2></div>
+    <div class="panel-body" >
+         <div class="container fluid">
+
+                    <div class="row">
+
+                            <div class="col-sm-6">
+                                <img class="img-thumbnail" src="{{ patientdetails.profilepic.url }}"/>
+                            </div>
+                            <div class="col-sm-6">
+                                <b>First Name:</b>
+                                <p> {{ patientdetails.user.first_name }}</p>
+
+
+                                <b>Last Name:</b>
+                                <p> {{ patientdetails.user.last_name }} </p>
+
+
+                                <b>Date of Birth:</b>
+                                <p> {{ patientdetails.Date_of_birth }} </p>
+
+
+                                <b>Sex:</b>
+                                <p> {{ patientdetails.Gender }} </p>
+
+
+                                <b>Height:</b>
+                                <p> {{ patientdetails.Height }} </p>
+
+
+                                <b>Weight:</b>
+                                <p> {{ patientdetails.Weight }} </p>
+
+
+                                <b>Age:</b>
+                                <p> {{ dependantage  }} </p>
+
+
+                                <b>Residence:</b>
+                                <p> {{ patientdetails.Residence }}</p>
+
+                                <a href="{% url 'profile-update' pk=patientdetails.user.id %}">
+
+                                    <p>Update Profile </p>
+
+                                    </a>
+                            </div>
+
+                    </div>
+                    </div>
+         </div>
+
+<hr>
+            <div class="container-fluid">
+                    <h3>Immunization Card</h3>
+
+                                  <table class="table table-bordered">
+
+                                    <thead>
+                                      <tr>
+                                        <th>Age </th>
+                                        <th> Type</th>
+                                        <th> Dose</th>
+                                        <th>Status</th>
+                                        <th>More</th>
+                                      </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    {% for item in  vaccinesrecieved %}
+
+                                      <tr>
+
+                                        <td>{{ item.vaccine_dose_date_in_months }}</td>
+                                        <td>{{ item.vaccine.vaccine_Edition }}</td>
+                                        <td>{{ item.vaccine_dose }}</td>
+                                        <td><i class="glyphicon glyphicon-ok "></i></td>
+                                        <td><a href="{% url 'patientvaccinedetails' %}?id={{ item.id }}"> View Details </a> </td>
+
+                                      </tr>
+
+                                    {% endfor %}
+
+                                    {% for item in  vaccinesrequired %}
+
+                                      <tr>
+
+                                        <td>{{ item.vaccine_dose_date_in_months }}</td>
+                                        <td>{{ item.vaccine.vaccine_Edition }}</td>
+                                        <td>{{ item.vaccine_dose }}</td>
+                                        <td><i class="glyphicon glyphicon-remove "></i></td>
+                                        <td><a href="{% url 'patientvaccinedetails' %}?id={{ item.id }}"> View Details</a></td>
+
+                                      </tr>
+
+                                    {% endfor %}
+
+                                    </tbody>
+
+                                  </table>
+            </div>
+
+    </div>
+  </div>
+
+
+
+
+{% endblock %}

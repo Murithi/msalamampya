@@ -1,0 +1,178 @@
+
+{% extends "base.html" %}
+{% block content %}
+
+{% load static %} 
+    <div id="feature-banner" class="container carousel slide margin-bottom-20"> 
+        
+        <!-- Indicators -->
+        <ol class="carousel-indicators" aria-label="featured stories">
+          <li role="presentation" class="active"><button data-target="#feature-banner" data-slide-to="0"><span class="screen-reader">Story 1</span></button></li>
+          <li role="presentation"><button data-target="#feature-banner" data-slide-to="1"><span class="screen-reader">Story 2</span></button></li>
+          <li role="presentation"><button data-target="#feature-banner" data-slide-to="2"><span class="screen-reader">Story 3</span></button></li>
+          <li role="presentation"><button data-target="#feature-banner" data-slide-to="3"><span class="screen-reader">Story 4</span></button></li>
+          <li role="presentation"><button data-target="#feature-banner" data-slide-to="4"><span class="screen-reader">Story 5</span></button></li>
+        </ol>
+        
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner"> 
+
+        <!-- begin feature banner 1 -->
+        <div class="item active" tabindex="0">
+            <a href="{{ posts.get_absolute_url }}" class="su-link" data-ua-action="feature1.html" data-ua-label="Tomorrow%27s+physicians"
+            title="Photo Credit: {{ posts.imagecredit }}">
+                <img src=" {{ posts.image.url }} " class="img-responsive" alt="Marine and Jean Le Pen" /></a>
+                <!--<img src="{% static 'images/2015-04-13_ht_medicine_dr1.jpg' %}" -->
+                                                                               <!---->
+            <!--alt="Two women in lab coats talking as they walk outside the Li Ka Shing Center for Learning and Knowledge " />-->
+
+
+                <div class="carousel-caption  left bg-dark" >
+                    <h3 class="sandstone">{{ posts.title }}</h3>
+                    <p class="sandstone25">{{ posts.subtitle }}</p>
+                </div>
+            </a>
+
+        </div>
+        <!-- end feature banner 1 -->
+
+        <!-- begin feature banner 2 -->
+            {% for itempost in otherposts %}
+
+        <div class="item"   >
+            <a href="{{ itempost.get_absolute_url }}" class="su-link"
+            data-ua-action="feature2.html" data-ua-label="The+beat+goes+on" 
+            title="Photo Credit: {{ itempost.imagecredit }}"><img src="{{ itempost.image.url }}"
+            data-src=""
+            alt="Members of 'Hairspray' cast in front of the LED set" />
+
+                <div class="carousel-caption  left bg-white" >
+                    <h3 class="red">{{ itempost.title }}</h3>
+                    <p class="dark">{{ itempost.subtitle }}</p>
+                </div>
+            </a>
+
+        </div>
+
+            {% endfor %}
+        <!-- end feature banner 2 -->
+
+
+        <!--&lt;!&ndash; begin feature banner 3 &ndash;&gt;-->
+        <!--<div class="item" tabindex="-1">-->
+            <!--<a href="" class="su-link" data-ua-action="feature3.html" data-ua-label="From+field+to+plate"-->
+            <!--title="Photo Credit: Julia James"><img src="{% static 'images/2015-04-02_fixed_ASB9_ht.jpg' %}" data-src="{% static 'images/2015-04-02_fixed_ASB9_ht.jpg' %}" -->
+            <!--alt="Students working in a field as part of the Alternative Spring Break program" />-->
+
+                <!--<div class="carousel-caption  right-top bg-white" >-->
+                    <!--<h3 class="red">From field to the lab</h3>-->
+                    <!--<p class="dark">Exploring and working on the field to discover ways of protecting man.</p>-->
+                <!--</div>-->
+            <!--</a>-->
+
+        <!--</div>-->
+        <!--&lt;!&ndash; end feature banner 3 &ndash;&gt;-->
+
+        <!--&lt;!&ndash; begin feature banner 4 &ndash;&gt;-->
+        <!--<div class="item" tabindex="-1">-->
+            <!--<a href="#" class="su-link" data-ua-action="feature4.html" data-ua-label="Big+Steps+on+a+Small+Scale"-->
+            <!--title="Photo Credit: L.A. Cicero"><img src="{% static 'images/2015-03-26_ht_nano_general.jpg' %}" data-src="{% static 'images/2015-03-26_ht_nano_general.jpg' %}" -->
+            <!--alt="Graduate student using an electron microscope in a nanolab " />-->
+
+                <!--<div class="carousel-caption  right bg-white" >-->
+                    <!--<h3 class="red">Big Steps on a Small Scale</h3>-->
+                    <!--<p class="dark">Biomedical engineers are developing nanoscale materials that will transform  biological research.</p>-->
+                <!--</div>-->
+            <!--</a>-->
+
+        <!--</div>-->
+        <!--&lt;!&ndash; end feature banner 4 &ndash;&gt;-->
+
+        <!--&lt;!&ndash; begin feature banner 5 &ndash;&gt;-->
+        <!--<div class="item" tabindex="-1">-->
+            <!--<a href="#" class="su-link" data-ua-action="feature5.html" data-ua-label="Water+solutions"-->
+            <!--title="Photo Credit: Amy Pickering"><img src="{% static 'images/2015-03-19_ht_water_crop.jpg' %}" data-src="{% static 'images/2015-03-19_ht_water_crop.jpg' %}"-->
+            <!--alt="Mother and children in an urban slum sitting near a pump" />-->
+
+                <!--<div class="carousel-caption  right bg-white" >-->
+                    <!--<h3 class="red">Water solutions</h3>-->
+                    <!--<p class="dark">From safe drinking water to resource management,  researchers are tackling challenges around the globe.</p>-->
+                <!--</div>-->
+            <!--</a>-->
+
+        <!--</div>-->
+        <!--&lt;!&ndash; end feature banner 5 &ndash;&gt;-->
+
+
+ 
+    </div>
+        
+        <!-- Controls -->
+        
+            <a class="carousel-control left" data-target="#feature-banner" accesskey="p" data-slide="prev">
+                <span class="glyphicon glyphicon-chevron-left"></span>
+            </a>
+            <a class="carousel-control right" data-target="#feature-banner" data-slide="next" accesskey="n">
+                <span class="glyphicon glyphicon-chevron-right"></span>
+            </a>
+</div>
+
+      <div class="container margin-bottom-30"> 
+        <!-- Top Stories -->
+            <div class="headline">
+              <h2>Recent Stories</h2>
+            </div>
+            <div class="row" id="news"> 
+              <!-- Top Stories include file --> 
+                    {% for item in recentnews %}
+                        <a href="{{ item.get_absolute_url }}" class="su-link">
+                        <div class="col-sm-3 news-item">
+                          <div class="news-img">
+
+                             <img src="{{ item.image.url }}"
+                             class="img-responsive" alt="Marine and Jean Le Pen" />
+                          </div>
+                          <div class="news-text">
+                            <h3><a href="#"
+                            class="su-link" data-ua-action="hp-news"> {{ item.title }}</a></h3>
+                            <p>{{ item.subtitle }}</p>
+                          </div>
+                        </div>
+                        </a>
+                        {% endfor %}
+                        <!--<div class="col-sm-3 news-item">-->
+                          <!--<div class="news-img">-->
+                            <!--<a href="#" class="su-link"-->
+                             <!--data-ua-action="hp-news" title="Photo Credit: Linda Cicero">-->
+                                 <!---->
+                             <!--<img src="#" class="img-responsive" alt="Stanford students planting trees" /></a>-->
+                          <!--</div>-->
+                          <!--<div class="news-text">-->
+                            <!--<h3><a href="#"  class="su-link" data-ua-action="hp-news">Appointments</a></h3>-->
+                            <!--<p>Make/view your scheduled appointments for vaccinations.</p>-->
+                          <!--</div>-->
+                        <!--</div>-->
+                        <!---->
+                        <!---->
+                        <!--<div class="col-sm-3 news-item">-->
+                          <!--<div class="news-img">-->
+                            <!--<a href="#" class="su-link"-->
+                            <!--data-ua-action="hp-news" title="Photo Credit: shutterstock">-->
+                                <!---->
+                            <!--<img src="{% static 'images/News.png' %}" class="img-responsive" -->
+                            <!--alt="Black student " /></a>-->
+                          <!--</div>-->
+                          <!--<div class="news-text">-->
+                            <!--<h3><a href="#" class="su-link" data-ua-action="hp-news">Messages</a></h3>-->
+                            <!--<p>View communication made with your immunization provider, as well as the latest personal communication.</p>-->
+                          <!--</div>-->
+                        <!--</div>-->
+    
+                    </div>
+            </div>
+        
+
+
+
+{% endblock %}
+

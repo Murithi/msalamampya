@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+{% load static %}
+
+<div class="container margin-bottom-30">
+
+            <div class="btn-group pull-right">
+              <button type="button" class="btn btn-danger">Action</button>
+              <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                <span class="caret"></span>
+                <span class="sr-only">Toggle Dropdown</span>
+              </button>
+              <ul class="dropdown-menu" role="menu">
+
+                <li><a href="{% url 'reportvaccine' %}">Report Side Effects</a></li>
+                <li><a href="{% url 'makeappointment' %}">Schedule Appointment</a></li>
+              </ul>
+            </div>
+            <div class="headline">
+
+              <h2>{{ mainvaccine.vaccinename }}</h2>
+
+            </div>
+
+                <h4> Progress by Dosage </h4>
+
+                <div class="progress">
+
+                  <div class="progress-bar info" style="width: {{ percentagedose }}%;">{{ percentagedose }}%</div>
+                </div>
+
+                 <div class="list-group">
+
+                        <h4>Vaccine Doses </h4>
+
+                    {% for item in  vaccinesrecieved %}
+                     <a href="{% url 'updatevaccine' %}?vaccine={{item.vaccine.id}}&dose={{item}}" class="list-group-item">{{ item }}<i class="glyphicon glyphicon-ok pull-right"></i></a>
+
+                    {% endfor %}
+
+
+                    {% for vaccine in vaccinesrequired %}
+
+                     <a href="{% url 'updatevaccine' %}?vaccine={{vaccine.vaccine.id}}&dose={{vaccine.vaccinedose}}" class="list-group-item">{{ vaccine }}<i class="glyphicon glyphicon-remove pull-right"></i></a>
+
+
+                    {% endfor %}
+
+
+                 </div>
+                <div role="tabpanel">
+
+                      <!-- Nav tabs -->
+                      <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#about" aria-controls="home" role="tab" data-toggle="tab">About</a></li>
+                        <li role="presentation"><a href="#administration" aria-controls="administration" role="tab" data-toggle="tab">Vaccine Administration</a></li>
+                        <li role="presentation"><a href="#sideeffects" aria-controls="sideeffects" role="tab" data-toggle="tab">Side Effects</a></li>
+                        <li role="presentation"><a href="#schedules" aria-controls="schedules" role="tab" data-toggle="tab">Schedules</a></li>
+                      </ul>
+
+                      <!-- Tab panes -->
+                      <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="about">
+                            {{ mainvaccine.aboutVaccine }}
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="administration">
+                            <ul>
+
+                                {% for item in alldoses %}
+                                    <li>{{ item.vaccine_dose }} - {{ item.vaccinedoseday }} Weeks</li>
+                                {% endfor %}
+
+                            </ul>
+
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="sideeffects">
+                                <ul>
+
+                                   {% for sideff in sideeffects %}
+                                <li>{{ sideff.sideEffectDesc }} </li>
+                                {% endfor %}
+
+                                </ul>
+
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="schedules">...</div>
+                      </div>
+
+                </div>
+
+
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+{% load static %}
+    <div class="headline">
+              <h2>Child Vaccines</h2>
+            </div>
+
+                {% for item in  allvaccines %}
+
+                <div>
+                    <div class="row">
+                        <a href="{% url 'vaccinelist' %}?pk={{ thisuser.id }}&id={{ item.id }}">
+                            <div class="col-sm-6">
+                                <img class="img-thumbnail" src="{{ item.image }}" >
+                            </div>
+                            <div class="col-sm-6">
+                                <h3>{{ item.vaccine_name }} </h3>
+                                <p>View {{ item.vaccine_name }} progress.</p>
+                            </div>
+                        </a>
+                    </div>
+                    </div>
+                <hr>
+                {% endfor %}
+    </div>
+
+{% endblock %}

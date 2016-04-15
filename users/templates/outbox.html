@@ -1,0 +1,29 @@
+{% extends "msalamamail.html" %}
+{% block content %}
+{% load static %}
+
+<div class="list-group">
+                            {% if message_list %}
+                                {% for message in message_list %}
+                                <a href="{{ message.get_absolute_url }}" class="list-group-item">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox">
+                                        </label>
+                                    </div>
+                                    <span class="glyphicon glyphicon-star-empty"></span>
+                                    <span class="name" style="min-width: 120px;
+                                        display: inline-block;">{{ message.sender }}
+                                    </span>
+                                    <span class="">{{ message.subject  }}</span>
+                                    <span class="badge">{{ message.sent_at }}</span>
+                                    <span class="pull-right"><span class="glyphicon glyphicon-paperclip"></span></span>
+                                </a>
+
+                                {% endfor %}
+                            {% else %}
+                                <h4>No messages</h4>
+                            {% endif %}
+                    </div>
+
+{% endblock %}
