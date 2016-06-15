@@ -53,7 +53,7 @@ INSTALLED_APPS = (
     'users',
     'vaccines',
     'blog',
-    'account',
+    # 'account',
 
 )
 
