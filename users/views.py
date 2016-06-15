@@ -1,10 +1,13 @@
 import datetime
-
+import json
+from django.views.generic import View
+import forms
+from django.core import serializers
 from django.core.context_processors import csrf
 from django.contrib import auth
 from django.contrib.messages.views import  SuccessMessageMixin
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, render_to_response, redirect, get_object_or_404
 from django.template import RequestContext
 from django.db.models import Q
@@ -17,7 +20,7 @@ from django.views.generic.list import ListView
 from django.conf import settings
 from django.contrib.auth.models import User
 from vaccines.models import Vaccine, VaccineDose, SideEffectbyVaccine
-from .models import UserProfile, UserVaccination, DependantProfile, Appointment
+from .models import UserProfile, UserVaccination, DependantProfile, Appointment, Doctor, Facility
 from .forms import UserProfileForm, SignupForm, DependantProfileForm
 from blog.models import Blog, Category
 
@@ -25,6 +28,9 @@ class UserPathMixin(object):
 
     def get_object(self):
         return get_object_or_404(get_user_model(), username=self.kwargs['username'])
+
+
+
 
 @login_required
 def home_page(request):
@@ -188,19 +194,23 @@ def dashboard(request):
 
 
 def patient_profile(request):
-    thisuser= User.objects.get(id =request.GET.get('pk'))
+    print request.GET.get('pk')
+    # thisuser= User.objects.get(id=request.GET.get('pk'))
+    thisuser=request.GET.get('pk')
     months = lambda a, b: abs((a.year - b.year) * 12 + a.month - b.month)
 
-    birthday = UserProfile.objects.get(user=thisuser)
-    age = months(datetime.date.today(), birthday.Date_of_birth)
-    if age > 12:
-        age = age / 12
-
-    # Vaccination Card details
-    if age>18:
+    if UserProfile.objects.filter(user=thisuser).exists():
+        birthday = UserProfile.objects.get(user=thisuser)
+        age = months(datetime.date.today(), birthday.Date_of_birth)
+        if age > 12:
+            age = age / 12
         patient_details = UserProfile.objects.get(user=thisuser)
     else:
         patient_details = DependantProfile.objects.get(user=thisuser)
+        birthday = DependantProfile.objects.get(user=thisuser)
+        age = months(datetime.date.today(), birthday.Date_of_birth)
+        if age > 12:
+            age = age / 12
     Received_Vaccines = VaccineDose.objects.filter(uservaccination__patient=thisuser).order_by(
         "vaccine_dose_date_in_months")
     All_Vaccines = VaccineDose.objects.all().order_by("vaccine_dose_date_in_months")
@@ -347,7 +357,7 @@ class AppointmentCreateView(SuccessMessageMixin, CreateView):
     """Powers a form to create a new appointment"""
 
     model = Appointment
-    fields = ['name', 'phone_number', 'time', 'time_zone']
+    fields = ['name', 'phone_number', 'doctor', 'time', 'time_zone']
     success_message = 'Appointment successfully created.'
 
 
@@ -399,3 +409,161 @@ def view_category(request, slug):
         'category': category,
         'posts': Blog.objects.filter(category=category)[:5]
     })
+def default(o):
+    if type(o) is datetime.date or type(o) is datetime.datetime:
+        return o.isoformat()
+
+class UsersView(View):
+    def get(self, request, *args, **kwargs):
+        data_type = request.GET.get('type')
+
+
+        username = self.kwargs['pk']
+
+        if username is not None:
+
+            Usaggregate = User.objects.none()
+            Usaggregate = list(Usaggregate) + list(User.objects.filter(id=username).values('username','first_name', 'last_name', 'id'))
+            ID = DependantProfile.objects.filter(Parent=username)
+            for item in ID:
+                Usaggregate = list(Usaggregate) + list(User.objects.filter(id=item.user.id).values('username','first_name', 'last_name', 'id'))
+
+            user_data = Usaggregate
+
+            Vaccine_Dose_Aggregate = VaccineDose.objects.none()
+            Vaccine_Dose_Aggregate = list(Vaccine_Dose_Aggregate) + list(VaccineDose.objects.all().values('vaccine', 'vaccine_dose',
+                                                                   'vaccine_dose_date_in_months', 'id'))
+            vaccine_dose_data =Vaccine_Dose_Aggregate
+
+
+            # VACCINES DATA
+
+            allvaccines=[]
+            parentvaccs=[]
+            savedvaccs = Vaccine.objects.all()
+            key=0
+            for vacc in savedvaccs:
+                Gcount=UserVaccination.objects.filter(patient=username, patient_vaccine=vacc.id).count()
+
+                if Gcount > 0:
+                    G = UserVaccination.objects.filter(patient=username, patient_vaccine=vacc.id)
+
+                    dosecount =UserVaccination.objects.filter(patient=username, patient_vaccine=vacc.id).count()
+                    perc = float(dosecount)/float(vacc.vaccine_Dose_Count)*100
+                    vaccusername = G[0].patient.username
+                    key=(key+1)
+                    allvaccines.append({"vaccinekey":key, "name":vaccusername, "vaccine_ID_num": vacc.id, "vaccine_name":vacc.vaccine_name, "percentage": perc})
+                else:
+                    thisUser = User.objects.get(id=username)
+                    key = (key + 1)
+                    allvaccines.append({"vaccinekey": key,
+                        "name": thisUser.username, "vaccine_ID_num": vacc.id, "vaccine_name": vacc.vaccine_name,
+                         "percentage": 0})
+
+            kids = DependantProfile.objects.filter(Parent=username)
+            for kid in kids:
+                for vacc in savedvaccs:
+                    G = UserVaccination.objects.filter(patient=kid.user, patient_vaccine=vacc.id)
+                    if Gcount > 0:
+                        dosecount = UserVaccination.objects.filter(patient=kid.user, patient_vaccine=vacc.id).count()
+                        perc = float(dosecount) / float(vacc.vaccine_Dose_Count) * 100
+                        vaccusername=kid.user.username
+                        key = (key + 1)
+                        allvaccines.append({"vaccinekey": key,"name": vaccusername, "vaccine_ID_num": vacc.id, "vaccine_name": vacc.vaccine_name,
+                             "percentage": perc})
+                    else:
+                        thisUser = User.objects.get(id=username)
+                        key = (key + 1)
+                        allvaccines.append({"vaccinekey": key,"name": kid.user.username, "vaccine_ID_num": vacc.id, "vaccine_name": vacc.vaccine_name,
+                             "percentage": 0})
+
+
+            parentrecs = UserVaccination.objects.filter(patient=username)
+            childrenID = DependantProfile.objects.filter(Parent=username)
+            doses = VaccineDose.objects.all()
+
+            family_doses = {}
+            recievedparentdose=[]
+            testchild=[]
+
+            parent_doses = []
+            for parent in parentrecs:
+                recievedparentdose= [dose for dose in parent.vaccine_dose.all()]
+
+
+
+            for dose in doses:
+
+
+                    if dose in recievedparentdose:
+                        parent_doses.append({"name": parent.patient.username, "vaccine_ID":dose.vaccine.id, "vaccine_name": dose.vaccine.vaccine_name,"vaccine_dose_id":dose.id, "vaccine_dose": dose.vaccine_dose,
+                                        "vaccination_date": dose.vaccine_dose_date_in_months, "received": 1})
+                    else:
+                        parent_doses.append({"name": parent.patient.username, "vaccine_ID":dose.vaccine.id, "vaccine_name": dose.vaccine.vaccine_name,"vaccine_dose_id":dose.id, "vaccine_dose": dose.vaccine_dose,
+                                        "vaccination_date": dose.vaccine_dose_date_in_months, "received": 0})
+
+
+
+            # test.append({"name": parentrecs[0].patient.first_name})
+            # family_doses[repr(test)] = parent_doses
+
+            child_doses = []
+            # received_doses=[]
+            for child in childrenID:
+                childrenrecs = UserVaccination.objects.filter(patient=child.user)
+                for childrec in childrenrecs:
+                    # received_doses = childrec.vaccine_dose.all()
+                    received_doses = [dose for dose in childrec.vaccine_dose.all()]
+            # for childrec in childrenrecs:
+            for dose in doses:
+                if dose in received_doses:
+                    child_doses.append({"name": child.user.username, "vaccine_ID":dose.vaccine.id, "vaccine_name": dose.vaccine.vaccine_name,"vaccine_dose_id":dose.id, "vaccine_dose": dose.vaccine_dose,
+                                        "vaccination_date": dose.vaccine_dose_date_in_months, "received": 1})
+
+
+                else:
+                    child_doses.append({ "name": child.user.username, "vaccine_ID":dose.vaccine.id, "vaccine_name": dose.vaccine.vaccine_name,"vaccine_dose_id":dose.id, "vaccine_dose": dose.vaccine_dose,
+                                        "vaccination_date": dose.vaccine_dose_date_in_months, "received": 0})
+
+
+
+
+
+
+            testchild.append({})
+
+            patient_data = child_doses + parent_doses
+            print len(patient_data)
+
+
+
+            Doctor_Aggregate = Doctor.objects.none()
+            Doctor_Aggregate = list(Doctor_Aggregate) + list(
+                Doctor.objects.all().values('user__username', 'facility__facility_name'))
+            doctor_data = Doctor_Aggregate
+
+
+            qs = Appointment.objects.filter(owner__id=username)
+            qs = qs.extra(
+                select={'appointment_date': "to_char(time, 'YYYY-MM-DD HH24:MI:SS')"})
+            # Appointment_Aggregate = Appointment.objects.none()
+            # Appointment_Aggregate = list(Appointment_Aggregate) + list(
+            #     qs.values('id', 'name', 'appointment_date', 'doctor__first_name', 'owner')
+            # )
+            Appointmentdetails=[]
+            Appts = Appointment.objects.filter(owner__id = username)
+            for apptmt in qs:
+                K=apptmt.doctor.all()
+                G=K[0].user
+                M=apptmt.facility.all()
+
+                Appointmentdetails.append({"owner": username, "doctor": G.first_name, "id": apptmt.id,  "appointment_date": apptmt.appointment_date,
+                                    "name": apptmt.name, "status": 0, "location": M[0].facility_name})
+            appointment_data= Appointmentdetails
+
+
+
+        data =  {'users': user_data, 'vaccines':allvaccines, 'vaccine_doses':vaccine_dose_data,
+                 'patient_vaccines':patient_data, 'doctors': doctor_data,'appointments': appointment_data}
+
+        return HttpResponse(json.dumps(data), content_type='application/json')

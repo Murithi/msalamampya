@@ -15,14 +15,19 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+
+import users.views
+
 admin.autodiscover()
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^messages/', include('mail.urls')),
     url(r'^booking/', include('booking.urls')),
+
+    # url(r"^account/", include("account.urls")),
+    # url(r"^signup/$", users.views.SignupView.as_view(), name="account_signup"),
+    # url(r"^account/", include("account.urls")),
     url(r'', include('users.urls')),
-
-
 
 ]

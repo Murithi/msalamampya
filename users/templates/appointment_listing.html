@@ -33,6 +33,7 @@
               <td><a href="{{ appointment.get_absolute_url }}">{{ appointment.pk }}</a></td>
               <td>{{ appointment.name }}</td>
               <td>{{ appointment.phone_number }}</td>
+                <td>{{appointment.doctor.user__name}}</td>
               <td>{{ appointment.time }}</td>
               <td>{{ appointment.created }}</td>
               <td>

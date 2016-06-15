@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import Vaccine, VaccineDose, SideEffectbyVaccine
 # Register your models here.
-from users.models import  UserProfile, UserVaccination, DependantProfile
+from users.models import  UserProfile, UserVaccination, DependantProfile, Doctor, Facility, Appointment
 from blog.models import Blog, Category
 
 class DependantProfileAdmin(admin.ModelAdmin):
@@ -22,7 +22,7 @@ admin.site.register(UserProfile, UserProfileAdmin)
 
 
 class UserVaccinationAdmin(admin.ModelAdmin):
-    list_display = ('patient', 'patient_vaccine', 'date_of_vaccine_reception', 'location_of_reception')
+    list_display = ('patient',  'date_of_vaccine_reception', 'location_of_reception')
 
     class Meta:
         model = UserVaccination
@@ -69,3 +69,22 @@ class CategoryAdmin(admin.ModelAdmin):
 
 admin.site.register(Blog, BlogAdmin)
 admin.site.register(Category, CategoryAdmin)
+
+
+class FacilityAdmin(admin.ModelAdmin):
+    list_display = ('facility_name', 'facility_location')
+    search_fields =('facility_name',)
+admin.site.register(Facility, FacilityAdmin)
+
+class DoctorAdmin(admin.ModelAdmin):
+    list_display = ('user', 'phone_number')
+    search_fields =('user',)
+admin.site.register(Doctor, DoctorAdmin)
+
+class AppointmentAdmin(admin.ModelAdmin):
+    list_display = ('name', 'time')
+    search_fields=('name',)
+    class Meta:
+        model = Appointment
+
+admin.site.register(Appointment, AppointmentAdmin)

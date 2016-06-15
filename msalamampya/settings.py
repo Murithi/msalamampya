@@ -53,6 +53,7 @@ INSTALLED_APPS = (
     'users',
     'vaccines',
     'blog',
+    'account',
 
 )
 
@@ -65,9 +66,12 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    "account.middleware.LocaleMiddleware",
+    "account.middleware.TimezoneMiddleware",
 )
 
-ROOT_URLCONF = 'msalamampya.urls'
+ROOT_URLCONF = 'msalamampya.urls'\
+    
 
 TEMPLATES = [
     {
@@ -80,6 +84,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'account.context_processors.account',
             ],
         },
     },
@@ -94,7 +99,7 @@ WSGI_APPLICATION = 'msalamampya.wsgi.application'
 DATABASES = {
           'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-            'NAME': 'msalamaeclipse',                      # Or path to database file if using sqlite3.
+            'NAME': 'msalama',                      # Or path to database file if using sqlite3.
             # The following settingns are not used with sqlite3:
             'USER': 'postgres',
             'PASSWORD': '',

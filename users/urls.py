@@ -41,6 +41,7 @@ urlpatterns = [
     url(r'^blog/view/(?P<slug>[^\.]+).html', 'users.views.view_post',  name='view_blog_post'),
     url(r'^blog/category/(?P<slug>[^\.]+).html',    'users.views.view_category',     name='blog_category'),
 
-
+    #api views
+    url(r'^users/(?P<pk>[0-9]+)/', views.UsersView.as_view()),
 
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

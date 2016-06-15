@@ -11,7 +11,7 @@
                 </div>
             <div class="col-sm-6">
                 <h3>{{ parent.user.first_name }} {{ item.user.last_name }} </h3>
-                <a href="{% url 'patient_profile' %}" ><p>View {{ item.user.first_name }}'s progress.</p></a>
+                <a href="{% url 'patient_profile' %}?pk={{ item.user.id}}" ><p>View {{ item.user.first_name }}'s progress.</p></a>
 
 
             </div>

@@ -1,10 +1,10 @@
 __author__ = 'eric'
-
+import account.forms
 from django import forms
 from models import UserProfile, DependantProfile
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-
+from django.forms.extras.widgets import SelectDateWidget
 
 class UserProfileForm (forms.ModelForm):
 
@@ -33,29 +33,77 @@ class DependantProfileForm(forms.ModelForm):
 
 class SignupForm(UserCreationForm):
     """User Creation form that uses bootrasp CSS"""
+    GENDER_CHOICES = (('m', 'Male'), ('f', 'Female'))
     firstname= forms.CharField(label=("First Name"), max_length=120,
                                widget=forms.TextInput({
                                    'class':'form-control'
                                    }))
 
-    lastname= forms.CharField(label=("Last Name"), max_length=120,
+    lastname = forms.CharField(label=("Last Name"), max_length=120,
+                                widget=forms.TextInput({
+                                    'class': 'form-control'
+                                }))
+    username = forms.CharField(label=("Username"), max_length=120,
+                                widget=forms.TextInput({
+                                    'class': 'form-control'
+                                }))
+    password1 = forms.CharField(label=("Password"), max_length=120,
+                                widget=forms.PasswordInput({
+                                    'class': 'form-control'
+                                }))
+    password2 = forms.CharField(label=("Password(Again)"), max_length=120,
+                                widget=forms.PasswordInput({
+                                    'class': 'form-control'
+                                }))
+    email = forms.CharField(label=("Email Address"), max_length=120,
+                                widget=forms.EmailInput({
+                                    'class': 'form-control'
+                                }))
+
+    # profilepic = forms.ImageField()
+
+
+
+    Residence= forms.CharField(label=("Residence"), max_length=120,
                                widget=forms.TextInput({
                                    'class':'form-control'
                                    }))
-    username = forms.CharField(label=("Username"), max_length=120,
-                               widget=forms.TextInput({
-                                   'class':'form-control'}))
-    email= forms.EmailField(label=("Email Address"), max_length=120,
-                               widget=forms.TextInput({
-                                   'class':'form-control'}))
-    password1 = forms.CharField(label=("Password"),
-                                widget=forms.widgets.PasswordInput({
-                                   'class':'form-control'}))
-    password2 = forms.CharField(label=("Password confirmation"),
-                                widget=forms.widgets.PasswordInput({
-                                   'class':'form-control'}),
-                                help_text=("Enter the same password as above, for verification."))
 
+    email = forms.EmailField(label=("Email Address"), max_length=120,
+                               widget=forms.TextInput({
+                                   'class':'form-control'}))
+
+    Weight = forms.IntegerField(label=("Weight"),
+                                widget=forms.widgets.NumberInput({
+                                    'class': 'form-control'}),
+                                )
+
+
+
+    Height = forms.IntegerField(label=("Height"),
+                                widget=forms.widgets.NumberInput({
+                                   'class':'form-control'}),
+                                )
+
+    Phone_Number = forms.CharField(label=("Phone No."), max_length=12,
+                                   widget=forms.NumberInput({
+                                       'class': 'form-control'
+                                   }))
+    National_ID = forms.CharField(label=("National ID No."), max_length=12,
+                                  widget=forms.NumberInput({
+                                      'class': 'form-control'}))
+
+    Date_of_birth = forms.DateField(widget=SelectDateWidget(years=range(1910, 2016)))
+
+    Gender = forms.ChoiceField(label="Sex",
+                               choices=GENDER_CHOICES,
+                               widget=forms.Select(),
+                               required=True)
+
+    # def __init__(self, custom_choices=None, *args, **kwargs):
+    #     sum(SignupForm, self).__init__(*args, **kwargs)
+    #     if custom_choices:
+    #         self.Gender['fie']
 
     class Meta:
         model=User

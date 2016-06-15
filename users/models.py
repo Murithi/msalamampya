@@ -10,6 +10,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from timezone_field import TimeZoneField
 from vaccines.models import Vaccine, VaccineDose
 from django.core.urlresolvers import reverse_lazy, reverse
+from django.core.exceptions import ValidationError
 
 def upload_location(instance, filename):
     return "%s/%s" %(instance.user, filename)
@@ -20,10 +21,11 @@ class UserProfile(models.Model):
     profilepic = models.ImageField(upload_to=upload_location,
                                    null=True,
                                    blank=True,
-                                   width_field="width_field",
-                                   height_field="height_field")
-    height_field = models.IntegerField(default=0)
-    width_field = models.IntegerField(default=0)
+                                  )
+    # image_height = models.PositiveIntegerField(null=True, blank=True, editable=False, default="100")
+    # image_width = models.PositiveIntegerField(null=True, blank=True, editable=False, default="100")
+
+
     Date_of_birth = models.DateField(default=timezone.now)
     Height = models.CharField(max_length=3)
     Weight = models.CharField(max_length=3)
@@ -54,11 +56,8 @@ class DependantProfile(models.Model):
     user = models.OneToOneField(User, primary_key=True)
     profilepic = models.ImageField(upload_to=upload_location,
                                    null=True,
-                                   blank=True,
-                                   width_field="width_field",
-                                   height_field="height_field")
-    height_field = models.IntegerField(default=0)
-    width_field = models.IntegerField(default=0)
+                                   blank=True,)
+
     Date_of_birth = models.DateField(default=timezone.now)
     Height = models.CharField(max_length=3)
     Weight = models.CharField(max_length=3)
@@ -86,8 +85,8 @@ class DependantProfile(models.Model):
 class UserVaccination(models.Model):
     patient = models.ForeignKey(User)
     creation_at = models.DateTimeField(auto_now_add=True, auto_now=False)
-    patient_vaccine = models.ForeignKey(Vaccine)
-    vaccine_dose = models.ForeignKey(VaccineDose)
+    patient_vaccine = models.ManyToManyField(Vaccine)
+    vaccine_dose = models.ManyToManyField(VaccineDose)
     date_of_vaccine_reception = models.DateTimeField()
     location_of_reception = models.CharField(max_length=150, blank=True)
     Timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
@@ -105,13 +104,39 @@ class AppointmentOld(models.Model):
     def __unicode__(self):
         return smart_unicode(self.patient.user.first_name, self.patient.user.last_name)
 
+class Facility(models.Model):
+    facility_name = models.CharField(max_length=100)
+    facility_location = models.CharField(max_length=100)
+
+    def __unicode__(self):
+        return smart_unicode(self.facility_name)
+
+class Physician (models.Model):
+    user = models.ForeignKey(User)
+    facility = models.ForeignKey(Facility)
+    phone_number = models.CharField(max_length=15)
+
+
+    def __unicode__(self):
+        return smart_unicode(self.user)
+
+class Doctor(models.Model):
+    user = models.ForeignKey(User)
+    facility = models.ForeignKey(Facility)
+    phone_number = models.CharField(max_length=15)
+
+    def __unicode__(self):
+        return smart_unicode(self.user)
+
 # @python_2_unicode_compatible
 class Appointment(models.Model):
     name = models.CharField(max_length=150)
     phone_number = models.CharField(max_length=15)
     time = models.DateTimeField()
     time_zone = TimeZoneField(default='Africa/Nairobi')
-
+    owner = models.ForeignKey(User)
+    doctor = models.ManyToManyField(Doctor)
+    facility = models.ManyToManyField(Facility);
     # Additional fields not visible to users
     task_id = models.CharField(max_length=50, blank=True, editable=False)
     created = models.DateTimeField(auto_now_add=True)
@@ -129,40 +154,37 @@ class Appointment(models.Model):
 
         if appointment_time < arrow.utcnow():
             raise ValidationError('You cannot schedule an appointment for the past. Please check your time and time_zone')
+    #
+    # def schedule_reminder(self):
+    #     """Schedules a Celery task to send a reminder about this appointment"""
+    #
+    #     # Calculate the correct time to send this reminder
+    #     appointment_time = arrow.get(self.time, self.time_zone.zone)
+    #     reminder_time = appointment_time.replace(minutes=-settings.REMINDER_TIME)
+    #
+    #     # Schedule the Celery task
+    #     from .tasks import send_sms_reminder
+    #     result = send_sms_reminder.apply_async((self.pk,), eta=reminder_time)
+    #
+    #     return result.id
+    # def save(self, *args, **kwargs):
+    #     """Custom save method which also schedules a reminder"""
+    #
+    #     # Check if we have scheduled a reminder for this appointment before
+    #     if self.task_id:
+    #         # Revoke that task in case its time has changed
+    #         celery_app.control.revoke(self.task_id)
+    #
+    #     # Save our appointment, which populates self.pk,
+    #     # which is used in schedule_reminder
+    #     super(Appointment, self).save(*args, **kwargs)
+    #
+    #     # Schedule a new reminder task for this appointment
+    #     self.task_id = self.schedule_reminder()
+    #
+    #     # Save our appointment again, with the new task_id
+    #     super(Appointment, self).save(*args, **kwargs)
 
-    def schedule_reminder(self):
-        """Schedules a Celery task to send a reminder about this appointment"""
-
-        # Calculate the correct time to send this reminder
-        appointment_time = arrow.get(self.time, self.time_zone.zone)
-        reminder_time = appointment_time.replace(minutes=-settings.REMINDER_TIME)
-
-        # Schedule the Celery task
-        from .tasks import send_sms_reminder
-        result = send_sms_reminder.apply_async((self.pk,), eta=reminder_time)
-
-        return result.id
-    def save(self, *args, **kwargs):
-        """Custom save method which also schedules a reminder"""
-
-        # Check if we have scheduled a reminder for this appointment before
-        if self.task_id:
-            # Revoke that task in case its time has changed
-            celery_app.control.revoke(self.task_id)
-
-        # Save our appointment, which populates self.pk,
-        # which is used in schedule_reminder
-        super(Appointment, self).save(*args, **kwargs)
-
-        # Schedule a new reminder task for this appointment
-        self.task_id = self.schedule_reminder()
-
-        # Save our appointment again, with the new task_id
-        super(Appointment, self).save(*args, **kwargs)
-class Doctor(models.Model):
-    user = models.OneToOneField(User, primary_key=True)
-    facility_name = models.CharField(max_length=100)
-    phone_number = models.CharField(max_length=15)
 
 class DailySchedule(models.Model):
     doctor = models.ForeignKey(Doctor, related_name='day_schedule')
