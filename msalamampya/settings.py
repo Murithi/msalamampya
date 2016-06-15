@@ -96,17 +96,22 @@ WSGI_APPLICATION = 'msalamampya.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
-DATABASES = {
-          'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-            'NAME': 'msalama',                      # Or path to database file if using sqlite3.
-            # The following settingns are not used with sqlite3:
-            'USER': 'postgres',
-            'PASSWORD': '',
-            'HOST': 'localhost',                      # Empty for localhost through domain sockets or           '127.0.0.1' for localhost through TCP.
-            'PORT': '5432',                      # Set to empty string for default.
-     }
-}
+# Parse database configuration from $DATABASE_URL
+import dj_database_url
+
+DATABASES = { 'default' : dj_database_url.config()}
+
+# DATABASES = {
+#           'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+#             'NAME': 'msalama',                      # Or path to database file if using sqlite3.
+#             # The following settingns are not used with sqlite3:
+#             'USER': 'postgres',
+#             'PASSWORD': '',
+#             'HOST': 'localhost',                      # Empty for localhost through domain sockets or           '127.0.0.1' for localhost through TCP.
+#             'PORT': '5432',                      # Set to empty string for default.
+#      }
+# }
 
 
 # Internationalization
