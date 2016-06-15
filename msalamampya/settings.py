@@ -28,9 +28,9 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
-# Address of Redis instance, our Celery broker
-BROKER_URL = 'amqp://localhost'
-BROKER_POOL_LIMIT = 8
+# # Address of Redis instance, our Celery broker
+# BROKER_URL = 'amqp://localhost'
+# BROKER_POOL_LIMIT = 8
 
 
 # Reminder time: how early text messages are sent in advance of appointments
